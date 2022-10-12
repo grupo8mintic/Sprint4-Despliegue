@@ -1,0 +1,60 @@
+<!doctype html>
+<html class="bg-amber-500	">
+  <head>
+    <title>{% block title %}{% endblock %} - Cubop Message</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="sweetalert2.min.css">
+  </head>
+  <body class="max-w-lg mx-auto rounded-md">
+    <nav class="rounded-t-md prose">
+      <h1 class="m-0 ml-1">Cubop Message</h1>
+      <ul class="m-0">
+        {% if g.user %}
+          <li><span>{{ g.user['username'] }}</span>
+          <li><a href="{{ url_for('auth.logout') }}">Cerrar Sesion</a>
+        {% else %}
+          <li><a href="{{ url_for('auth.register') }}">Registrarse</a>
+          <li><a href="{{ url_for('auth.login') }}">Iniciar Sesion</a>
+          <li><a href="{{ url_for('auth.forgot') }}">¿Olvido su contraseña?</a>
+        {% endif %}
+      </ul>
+    </nav>
+    <section class="content">
+      <header class="mb-2 flex justify-between">
+        {% block header %}{% endblock %}
+      </header>
+      {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'error' %}
+                    <script>
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            text: "{{message}}",
+                            showConfirmButton: true,
+                            timer: 5000
+                        })
+                    </script>
+                {% endif %}
+                {% if category == 'success' %}
+                    <script>
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            text: "{{message}}",
+                            showConfirmButton: true,
+                            timer: 5000
+                        })
+                    </script>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+      {% endwith  %}
+      {% block content %}{% endblock %}
+    </section>
+  </body>
+</html>
